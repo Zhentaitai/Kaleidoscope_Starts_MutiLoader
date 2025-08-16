@@ -1,0 +1,54 @@
+plugins {
+    id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.7"
+}
+
+group = 'com.github.zhen_tai'
+version = '0.0.1'
+
+
+subprojects {
+    apply plugin: 'java'
+
+    java {
+        toolchain.languageVersion = JavaLanguageVersion.of(21)
+        withSourcesJar()
+        withJavadocJar()
+    }
+
+    repositories {
+    }
+
+    processResources {
+        def replaceProperties = [
+                "mod_version":                      mod_version,
+                "mod_group_id":                     mod_group_id,
+                "minecraft_version":                minecraft_version,
+                "minecraft_version_range":          minecraft_version_range,
+                "mod_id":                           mod_id,
+                "mod_name":                         mod_name,
+                "mod_license":                      mod_license,
+                "mod_authors":                      mod_authors,
+                "mod_description":                  mod_description,
+                "fabric_loader_version":            fabric_loader_version,
+                "fabric_version":                   fabric_version,
+                "neo_version":                      neo_version,
+                "neo_version_range":                neo_version_range,
+                "neo_loader_version_range":         neo_loader_version_range,
+//                "neo_parchment_minecraft_version":  neo_parchment_minecraft_version,
+//                "neo_parchment_mappings_version":   neo_parchment_mappings_version,
+        ]
+        inputs.properties replaceProperties
+
+        filesMatching(['pack.mcmeta', 'META-INF/neoforge.mods.toml']) {
+            expand replaceProperties
+        }
+    }
+
+
+    idea {
+        module {
+            downloadSources = true
+            downloadJavadoc = true
+        }
+    }
+}
